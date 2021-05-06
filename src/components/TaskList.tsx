@@ -14,18 +14,39 @@ export function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
+  // Regex da linha 20 - source: https://www.youtube.com/watch?v=E1E08i2UJGI
+  // https://github.com/briancodex/react-todo-app-v1/blob/master/src/App.css
   function handleCreateNewTask() {
-    // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    
+    if (!newTaskTitle || /ˆ\s*$/.test(newTaskTitle)) {
+      return;
+    }
+    const newTask = {
+      id: Math.floor(Math.random() * 10000) + 1,
+      title: newTaskTitle,
+      isComplete: false,
+    }
+      const newTaskList = [...tasks, newTask];
+      setTasks(newTaskList);
+      setNewTaskTitle('');
+    
   }
 
   function handleToggleTaskCompletion(id: number) {
-    // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    let updateTask = [...tasks].map((task) => {
+      if (task.id === id) {
+        task.isComplete = !task.isComplete
+      }
+      return task;
+    })
+    setTasks(updateTask);
   }
 
   function handleRemoveTask(id: number) {
-    // Remova uma task da listagem pelo ID
+    const removeTask = [...tasks].filter(task => task.id !== id);
+    setTasks(removeTask);
   }
-
+  
   return (
     <section className="task-list container">
       <header>
